@@ -1,66 +1,83 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, FlatList, TouchableOpacity, StatusBar } from 'react-native';
+import { View, StyleSheet, Text, FlatList, StatusBar } from 'react-native';
 import Boton from '../components/Boton';
-import dataColor from '../data/dataColor';
+import dataColorAquosos from '../data/ColoresAquosos';
+import dataColorNatural from '../data/ColoresNatural';
+import dataColorOtros from '../data/ColoresOtros';
+import Card from '../components/Card';
 
 const Indicaciones = ({ navigation }) => {
-    const informacion = dataColor;
+    const informacionAquosa = dataColorAquosos;
+    const informacionNatural = dataColorNatural;
+    const informacionOtros = dataColorOtros;
 
     const irPantalla1 = () => {
         navigation.navigate('Pantalla1');
     };
 
+    const sections = [
+        { title: 'Colores Aquosos', data: informacionAquosa },
+        { title: 'Natural Colors', data: informacionNatural },
+        { title: 'Other Colors', data: informacionOtros }
+    ];
+
     return (
-        <View style={styles.container}>
-            <View style={styles.card}>
-                <View style={styles.textContainer}>
-                    <Text style={styles.title}>Trabajo en clase:</Text>
-                    <Text style={styles.title}>Indicaciones: </Text>
-                    <Text style={styles.description}>
-                        Agregar una pantalla y replicar la siguiente pantalla, las imagenes pueden ser otras:
-                    </Text>
-                </View>
-                <Boton
-                    textoBoton='Regresar a Inicio'
-                    accionBoton={irPantalla1}
-                />
-            </View>
-            <FlatList
-                data={informacion}
-                renderItem={({ item }) => (
-                    <View style={styles.cardTotal}>
-                        <Image source={item.src} style={styles.image} />
-                        <Text style={styles.title}>{item.name}</Text>
+        <FlatList
+            ListHeaderComponent={
+                <View style={styles.card}>
+                    <View style={styles.textContainer}>
+                        <Text style={styles.title}>Trabajo en clase:</Text>
+                        <Text style={styles.title}>Indicaciones: </Text>
+                        <Text style={styles.description}>
+                            Agregar una pantalla y replicar la siguiente pantalla, las imagenes pueden ser otras:
+                        </Text>
                     </View>
-                )}
-                keyExtractor={(item) => item.id}
-                numColumns={3}
-                contentContainerStyle={styles.flatListContainer}
-            />
-        </View>
+                    <Boton
+                        textoBoton='Regresar a Inicio'
+                        accionBoton={irPantalla1}
+                    />
+                </View>
+            }
+            data={sections}
+            renderItem={({ item }) => (
+                <>
+                    <Text style={styles.Split}>{item.title}</Text>
+                    <FlatList
+                        data={item.data}
+                        renderItem={({ item }) => (
+                            <Card
+                                src={item.src}
+                                name={item.name}
+                                hexa={item.hexa}
+                            />
+                        )}
+                        keyExtractor={(item) => item.id}
+                        numColumns={3}
+                        contentContainerStyle={styles.flatListContainer}
+                    />
+                </>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={styles.container}
+        />
     );
 };
 
 export default Indicaciones;
 
 const styles = StyleSheet.create({
-    cardTotal: {
-        flexDirection: 'column',
-        backgroundColor: '#FF5733',
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: 5.,
-        padding: 30,
-        width: 110,
-        height: 300
+    Split: {
+        backgroundColor: 'gray',
+        color: 'white',
+        width: '100%',
+        paddingVertical: 15,
+        fontSize: 17,
+        marginVertical: 8,
+        textAlign: 'center'
     },
     container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: StatusBar.currentHeight || 0,
-        paddingTop: 30
+        paddingHorizontal: 10,
+        paddingVertical: 20,
     },
     card: {
         backgroundColor: '#fff',
@@ -69,6 +86,7 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         padding: 10,
         marginBottom: 20,
+        marginTop: 25,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -77,32 +95,17 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
-        width: '95%',
         alignItems: 'center',
-    },
-    image: {
-        width: 100,
-        height: 100,
-        marginBottom: 10,
     },
     textContainer: {
         alignItems: 'center',
     },
-    title: {
-        fontSize: 20,
-        fontWeight: '600',
-        marginBottom: 5,
-    },
     description: {
         fontSize: 16,
         marginBottom: 20,
+        textAlign: 'center'
     },
     flatListContainer: {
-        flexDirection: 'row', // Cambiado a 'row' para mostrar las tarjetas horizontalmente
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start', // Alinear al inicio de la fila
-        padding: 5,
-        width: '100%',
+        alignItems: 'center',
     }
 });
